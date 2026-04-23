@@ -128,11 +128,11 @@ static void f(int[] a, int i) {
 }
 \end{lstlisting}
 \end{minipage}
-\caption{Example of a semantics-preserving transformation that affects verifiability. Encapsulating a safety condition in a helper method prevents the checker from refining constraints, leading to false positive warnings.\todo{What's the purpose of ``needsPositive'' in this example. I think it can be excluded without weakening the point. And, there's a reason to exclude it: it is not defined anywhere, and defining it will require you to introduce the \<@Positive> annotation, which you probably don't want to explain.}
+\caption{Example of a semantics-preserving transformation that affects verifiability. Encapsulating a safety condition in a helper method prevents the checker from refining constraints, leading to false positive warnings.\todo{What's the purpose of ``needsPositive'' in this example. I think it can be excluded without weakening the point. And, there's a reason to exclude it: it is not defined anywhere, and defining it will require you to introduce the \<@Positive> annotation, which you probably don't want to explain.}}
 \label{fig:verifiability-example}
 \end{figure}
 
-We construct a set of candidate transformations using the following process. First, we review the research papers and official documentation\todo{but not the bug trackers? Whyever not? Bug trackers should definitely be included, among the others} of the selected checkers to identify common causes of false positive warnings. These sources typically describe patterns that hinder the checker’s ability to infer required properties. If necessary, we supplement this information by mining real-world repositories, searching for commits or issues that reference false positives associated with the selected checkers.\todo{Bug trackers are ok, but I don't think you should even begin to suggest that you will try to mine these patterns from real repositories. That's an interesting project in-and-of itself and would be fun to do, but not as part of this study: https://docs.google.com/document/d/1vhhb3SJESImnxMA0q196fmZp_1vHsj9X9Q9ylmU8i14/edit?usp=sharing. You can participate if we recruit an undergrad and you're interested.}
+We construct a set of candidate transformations using the following process. First, we review the research papers and official documentation\todo{but not the bug trackers? Whyever not? Bug trackers should definitely be included, among the others} of the selected checkers to identify common causes of false positive warnings. These sources typically describe patterns that hinder the checker’s ability to infer required properties. If necessary, we supplement this information by mining real-world repositories, searching for commits or issues that reference false positives associated with the selected checkers.\todo{Bug trackers are ok, but I don't think you should even begin to suggest that you will try to mine these patterns from real repositories. That's an interesting project in-and-of itself and would be fun to do, but not as part of this study: \url{https://docs.google.com/document/d/1vhhb3SJESImnxMA0q196fmZp_1vHsj9X9Q9ylmU8i14/edit?usp=sharing}. You can participate if we recruit an undergrad and you're interested.}
 
 From these sources, we derive a set of candidate code transformations that:
 \begin{enumerate}
@@ -219,6 +219,9 @@ The primary model includes:
 Additional fixed effects may be included to account for variation across checkers and transformations. Interaction terms can be used to explore whether the effect of verifiability differs across these dimensions.\todo{Include everything you mentioned in earlier sections here, for consistency. E.g., background effects, code size delta, ...}
 
 The primary quantity of interest is the effect of verifiability condition on comprehension time. Statistical significance is assessed using standard inferential procedures on the model coefficients.
+
+\subsection{Implications}
+\todo{Discuss what we might conclude, given different possible observations, and discuss the implications. In particular, you want to draw out the argument here that this study is interesting and creates new knowledge no matter how it turns out: if we don't find a connection, we can argue that the FSE23 result was ephemeral; if we do, we've opened a whole new research subarea.}
 
 \subsubsection{Summary}
 
