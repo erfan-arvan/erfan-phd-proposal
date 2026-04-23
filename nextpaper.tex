@@ -29,9 +29,9 @@ Our main research question is:
 
 We define code verifiability as the effort required for a developer to use a verification tool to establish the correctness of a code snippet with respect to a set of safety properties. In practice, verifiability is not an intrinsic property of code independent of context, but is defined relative to a specific verification setting, including the tool, the properties being checked, and the available specifications.
 
-Directly measuring verification effort would require controlled studies with developers actively using verification tools, which is difficult to scale. Therefore, following prior work, we operationalize verifiability using an automated proxy based on the behavior of static analysis tools.
+Directly measuring verification effort would require controlled studies with developers actively using verification tools, which is difficult to scale. Therefore, following prior work, we operationalize verifiability using an automated proxy based on the behavior of static analysis tools\todo{We have to be careful here not to include non-verification static analysis tools, such as heuristic bug-finding tools. Make sure that this definition includes a notion of soundness or ``building a proof internally''. Maybe base it on the presence or absence of theoretically sound deductive reasoning? That's what we did for the FSE 2023 paper: Infer counts, because its underlying analysis is biabduction (a proof technique), even though the tool itself is unsound, because it uses heuristics to decide which warnings to report. Given the study design below, though, I think you can get away with ``sound'': CF checkers are (supposed to be) sound.}.
 
-In this study, we focus on the Checker Framework and select a small number of its checkers. Within each checker, we consider its most common warning types as identified in the literature and documentation. We then operationalize verifiability in terms of the presence or absence of false positive warnings under this fixed verification setting.
+In this study, we focus on the Checker Framework and select a small number of its checkers\todo{Based on what criteria?}. Within each checker, we consider its most common warning types as identified in the literature and documentation\todo{Why? This will not only be inconvenient to do, but also you don't really use the result of this analysis as far as I can tell.}. We then operationalize verifiability in terms of the presence or absence of false positive warnings under this fixed verification setting.
 
 A false positive warning occurs when the tool reports a potential violation of a safety property in code that is in fact correct. Such warnings typically arise because the tool is unable to infer necessary facts about the program due to limitations in its analysis or due to implicit assumptions in the code. Code that produces false positive warnings requires additional effort from developers, who must either refactor the code, provide additional specifications, or manually inspect and dismiss the warning.
 
@@ -43,9 +43,11 @@ To enable controlled manipulation, we define verifiability as a binary condition
 
 This operationalization allows us to construct paired code snippets that differ only in whether the checker can successfully verify them.
 
-Unlike prior designs that focus on a single transformation or warning type, our study incorporates multiple checkers and multiple false positive–inducing transformations within the Checker Framework. These transformations are derived from documented causes of false positives and are selected to be representative while preserving semantic equivalence and minimizing structural changes. This design improves generalizability while maintaining control over the verification setting.
+Unlike prior designs\todo{cite? I'm not sure what study or studies you're refering to here...} that focus on a single transformation or warning type, our study incorporates multiple checkers and multiple false positive–inducing transformations within the Checker Framework. These transformations are derived from documented causes of false positives and are selected to be representative while preserving semantic equivalence and minimizing structural changes. This design improves generalizability while maintaining control over the verification setting.
 
 \subsection{Code Comprehensibility}
+
+\todo{Should this be a subsubsection?}
 
 Code comprehensibility refers to how easily a developer can construct a coherent mental model of a piece of code that supports reasoning about its behavior. This construct is inherently relative and cannot be directly observed.
 
