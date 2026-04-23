@@ -1,0 +1,223 @@
+\section{Next Paper}
+\label{sec:technique}
+The Checker Framework manual advises developers to ``rewrite your code to be simpler for the checker to analyze; this is likely to make it easier for people to understand, too''~\cite{checkerframework-manual}. Similarly, the documentation of the OpenJML verification tool notes that ``success in checking the consistency of the specifications and the code will depend on the complexity and style in which the code and specifications are written''~\cite{openjml}. These statements reflect a widely held assumption in the software verification community that code that is easier for verification tools to analyze is also easier for humans to understand.
+
+Despite this assumption, it remains unclear whether and to what extent code that is more verifiable is easier for humans to understand. In this paper, we experimentally evaluate this relationship. We define verifiability as the effort required to use a verification tool to establish safety properties such as the absence of null pointer dereferences or out-of-bounds accesses, and operationalize it as the presence or absence of false positive warnings produced by a selected set of verification tools. We define comprehensibility as the ease with which a human understands a piece of code and approximate it as the time required to correctly complete a task involving reasoning about the program’s behavior.
+
+If a substantial relationship between code comprehensibility and verifiability exists, and if one of these constructs can be approximated automatically, then it may be possible to estimate the other without relying on costly human studies. For example, a reliable proxy for verifiability could be used to identify code that is difficult to understand and guide refactoring toward more comprehensible forms. This is particularly important given that prior studies estimate that developers spend between 58\% and 70\% of their time understanding code. Improving code comprehensibility could therefore have a significant impact on developer productivity. Moreover, with the increasing use of large language models for code generation, such proxies could help ensure that generated code remains understandable to human developers.
+
+Conversely, if a reliable proxy for comprehensibility can be identified, it may be used to improve verification workflows. In particular, it could help identify false positive warnings produced by static analysis tools by highlighting warnings associated with code that is difficult to understand. Since developers often spend substantial effort determining whether a warning corresponds to a real defect or a false positive, such an approach could reduce verification effort and improve overall efficiency.
+
+Although this relationship has been widely assumed, prior empirical evidence remains limited in its ability to characterize it under controlled conditions. In earlier work by members of our research team, a meta-analysis was conducted over code snippets from existing comprehensibility studies, aggregating results across different tools, warning types, and experimental settings. While that analysis revealed consistent associations between verification-related signals and measures of human understanding, it relied on heterogeneous sources that were not designed to isolate specific factors. In particular, variation in code structure, diversity of warning types, and differences in the underlying causes of warnings were not controlled. Moreover, the underlying studies employed a wide range of proxies to approximate code comprehensibility, many of which have since been shown to be weak or unreliable proxies for human understanding. As a result, the aggregated signals in the meta-analysis may be influenced not only by differences in verification-related properties, but also by inconsistencies in how comprehensibility was measured across studies. 
+
+Taken together, these limitations suggest that the observed patterns may reflect multiple interacting influences, and the analysis does not provide a clear understanding of how verifiability relates to comprehensibility when both the measurement of comprehensibility and the sources of variation in code are carefully constrained.
+
+To better understand this relationship, we propose a controlled experimental study that systematically manipulates verifiability while constraining other sources of variation as much as possible. In particular, we control for variation in the verification setting by restricting the study to a small, predefined set of verification tools selected based on expert judgment. This ensures that all code is analyzed under a consistent and well-defined verification configuration. We further reduce structural differences between code versions by using semantics-preserving transformations that minimally alter code length and control flow. Finally, we mitigate variability due to participant and task effects through randomized assignment of snippet versions and appropriate statistical modeling.
+
+Within this controlled setting, we construct a dataset of semantically equivalent code snippets in which each snippet is represented by two versions: a high-verifiability version that produces no warnings under the selected verification tools, and a low-verifiability version that produces false positive warnings under those same tools. These versions are created using carefully selected, semantics-preserving transformations derived from documented causes of false positives in the selected verification tools. This paired construction allows us to vary verifiability while keeping the underlying functionality of the code constant and minimizing unrelated structural differences.
+
+We then ask student participants to complete input-output comprehension tasks on these snippets. For each snippet, participants are given a concrete input and are asked to determine the corresponding output of the method. Based on prior work, we use the time required to correctly answer these questions as a validated proxy for code comprehensibility. By collecting response times across multiple snippets and participants, and analyzing the data using appropriate statistical models, we examine how differences in tool-relative verifiability are reflected in measures of human understanding.
+
+Our main research question is:
+
+  \begin{researchquestions}
+  \item Are semantically equivalent code snippets with higher verifiability more comprehensible than those with lower verifiability?
+  \end{researchquestions}
+  
+\subsection{Background}
+\subsubsection{Code Verifiability}
+
+We define code verifiability as the effort required for a developer to use a verification tool to establish the correctness of a code snippet with respect to a set of safety properties. In practice, verifiability is not an intrinsic property of code independent of context, but is defined relative to a specific verification setting, including the tool, the properties being checked, and the available specifications.
+
+Directly measuring verification effort would require controlled studies with developers actively using verification tools, which is difficult to scale. Therefore, following prior work, we operationalize verifiability using an automated proxy based on the behavior of static analysis tools.
+
+In this study, we focus on the Checker Framework and select a small number of its checkers. Within each checker, we consider its most common warning types as identified in the literature and documentation. We then operationalize verifiability in terms of the presence or absence of false positive warnings under this fixed verification setting.
+
+A false positive warning occurs when the tool reports a potential violation of a safety property in code that is in fact correct. Such warnings typically arise because the tool is unable to infer necessary facts about the program due to limitations in its analysis or due to implicit assumptions in the code. Code that produces false positive warnings requires additional effort from developers, who must either refactor the code, provide additional specifications, or manually inspect and dismiss the warning.
+
+To enable controlled manipulation, we define verifiability as a binary condition:
+\begin{itemize}
+    \item high verifiability corresponds to code that produces no warnings,
+    \item low verifiability corresponds to semantically equivalent code that produces false positive warnings.
+\end{itemize}
+
+This operationalization allows us to construct paired code snippets that differ only in whether the checker can successfully verify them.
+
+Unlike prior designs that focus on a single transformation or warning type, our study incorporates multiple checkers and multiple false positive–inducing transformations within the Checker Framework. These transformations are derived from documented causes of false positives and are selected to be representative while preserving semantic equivalence and minimizing structural changes. This design improves generalizability while maintaining control over the verification setting.
+
+\subsection{Code Comprehensibility}
+
+Code comprehensibility refers to how easily a developer can construct a coherent mental model of a piece of code that supports reasoning about its behavior. This construct is inherently relative and cannot be directly observed.
+
+In prior work, we defined code comprehensibility operationally through expert agreement on the relative difficulty of understanding code snippets. Using a Delphi-style protocol, multiple experienced developers iteratively ranked snippets by comprehension difficulty and resolved disagreements through structured feedback. The resulting rankings provided a practical approximation of ground-truth comprehensibility.
+
+Because expert-based evaluation is costly and does not scale, we subsequently evaluated a range of proxy measures using student studies. These studies showed that proxies based on input-output reasoning about program behavior align most strongly with expert judgments. In particular, the time required to correctly answer input-output questions was the most reliable proxy.
+
+Based on these findings, we adopt input-output comprehension tasks and use response time for correct answers as the primary measure of comprehensibility in this study. This measure captures the effort required to understand the behavior of the code while remaining scalable and suitable for controlled experiments.
+\subsection{Methodology}
+
+\subsubsection{Study Overview}
+
+The goal of this study is to estimate the effect of code verifiability on code comprehensibility under a controlled verification setting. We conduct a controlled experiment in which participants perform input-output comprehension tasks on semantically equivalent versions of Java methods that differ only in their verifiability with respect to the \textit{Checker Framework}. Verifiability is operationalized relative to a fixed verification ecosystem, and is manipulated through semantics-preserving code transformations that induce or eliminate false positive warnings produced by selected checkers.
+
+The study is designed as a multi-item, between-subjects experiment with repeated measures, where each participant completes multiple tasks and each code snippet appears in two versions across participants. The analysis is conducted using mixed-effects models to account for variability across participants and snippets.
+
+\subsubsection{Independent Variable and Treatment Definition}
+
+The primary independent variable is \textit{verifiability condition}, defined relative to a fixed verification setting based on the Checker Framework.
+
+This variable is manipulated as a binary factor with two levels:
+\begin{itemize}
+    \item \textbf{High-verifiability condition}: the code snippet produces no false positive warnings under the selected checker.
+    \item \textbf{Low-verifiability condition}: a semantically equivalent version of the same snippet produces one or more false positive warnings under the same checker.
+\end{itemize}
+
+The treatment is therefore not an abstract notion of verifiability, but a concrete manipulation of code that changes whether the checker can successfully verify certain safety properties. This manipulation is implemented through controlled code transformations that preserve program semantics while affecting the ability of the checker to reason about the code.
+
+\subsubsection{Dependent Variable}
+
+The dependent variable is \textit{code comprehensibility}, operationalized using a validated proxy measure.
+
+The primary outcome is the \textit{time required to correctly answer an input-output comprehension question} for a given code snippet. This measure captures the effort required for a participant to understand the behavior of the code. Time is recorded from the moment the participant begins the task until a correct answer is submitted.
+
+Correctness is also recorded as a secondary measure, and time-based analyses focus primarily on correct responses.
+
+\subsubsection{Verification Setting and Scope Conditions}
+
+The study fixes several aspects of the verification context to ensure a well-defined construct of verifiability.
+
+The verification ecosystem is restricted to the Checker Framework. Within this framework, we select at most two checkers based on expert judgment, prioritizing checkers that are widely used and that produce meaningful safety warnings. For each selected checker, we focus on its most frequent and representative warning types, as identified from the checker documentation and associated research papers.
+
+These choices define the scope of the study. The results are therefore interpreted as applying to verifiability within the selected Checker Framework setting, rather than to all possible verification tools or warning types.
+
+\subsubsection{Treatment Realization: Code Transformations}
+
+The manipulation of verifiability is achieved through semantics-preserving code transformations that induce false positive warnings.
+
+To illustrate the type of transformation we consider, we present a simplified example based on two checkers from Checker Framework.
+
+\begin{figure}[t]
+\centering
+\begin{minipage}{0.48\textwidth}
+\textbf{Low-verifiability version}
+\begin{lstlisting}[language=Java]
+static boolean isSafe(int i, int[] a) {
+    return i >= 1 && i < a.length;
+}
+
+static void f(int[] a, int i) {
+    if (isSafe(i, a)) {
+        needsPositive(i); // Warning
+        int x = a[i];     // Warning
+    }
+}
+\end{lstlisting}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\textbf{High-verifiability version}
+\begin{lstlisting}[language=Java]
+static void f(int[] a, int i) {
+    if (i >= 1 && i < a.length) {
+        needsPositive(i); // No warning
+        int x = a[i];     // No warning
+    }
+}
+\end{lstlisting}
+\end{minipage}
+\caption{Example of a semantics-preserving transformation that affects verifiability. Encapsulating a safety condition in a helper method prevents the checker from refining constraints, leading to false positive warnings.}
+\label{fig:verifiability-example}
+\end{figure}
+
+We construct a set of candidate transformations using the following process. First, we review the research papers and official documentation of the selected checkers to identify common causes of false positive warnings. These sources typically describe patterns that hinder the checker’s ability to infer required properties. If necessary, we supplement this information by mining real-world repositories, searching for commits or issues that reference false positives associated with the selected checkers.
+
+From these sources, we derive a set of candidate code transformations that:
+\begin{enumerate}
+    \item preserve the semantics of the original program,
+    \item reliably induce or eliminate false positive warnings,
+    \item have minimal impact on code length and structure, and
+    \item can be applied to multiple self-contained Java methods.
+\end{enumerate}
+
+We select a small number of such transformations for each checker, ensuring that the total number of distinct transformation configurations remains manageable relative to the number of snippets.
+
+These transformations are not treated as independent experimental factors. Instead, they serve as different realizations of the treatment condition. They are included in the analysis to account for heterogeneity in how the treatment is implemented.
+
+\subsubsection{Dataset Construction}
+
+We construct a dataset of Java methods drawn from high-quality, actively maintained repositories. Candidate repositories are selected based on criteria such as number of commits, number of pull requests, number of stars, and recent activity.
+
+From these repositories, we extract methods that satisfy the following constraints:
+\begin{itemize}
+    \item all types used in the method are from the JDK,
+    \item the method is static,
+    \item the method has at least one parameter and returns a value,
+    \item the method contains a moderate number of lines of code to ensure manageable task duration.
+\end{itemize}
+
+For each selected method, we construct two versions:
+\begin{itemize}
+    \item a high-verifiability version that produces no warnings,
+    \item a low-verifiability version obtained by applying a selected transformation that induces a false positive warning.
+\end{itemize}
+
+All transformations are manually validated to ensure semantic equivalence. Comments and documentation are removed to prevent leakage of semantic information. Identifier names are preserved across versions to maintain consistency.
+
+Care is taken to ensure that the two versions of each snippet are structurally similar. In particular, transformations are selected and applied so that differences in code length, control flow, and overall structure are minimal. This reduces the risk that differences in comprehension time are driven by factors other than verifiability.
+
+\subsubsection{Participants}
+
+Participants are undergraduate computer science students with prior experience in Java programming. Eligibility criteria include completion of relevant programming courses and familiarity with basic control flow and data structures.
+
+Participants are recruited through standard academic channels such as course announcements and email invitations. All participants are at least 18 years old and provide informed consent prior to participation.
+
+\subsubsection{Experimental Procedure}
+
+The study is conducted in a single session using a web-based interface.
+
+Each participant completes tasks on a sequence of code snippets presented one at a time. For each snippet, the participant is shown the code and asked to determine the output for a given input. The code remains visible during the task to avoid confounding memory effects.
+
+Each participant sees only one version of each underlying snippet, either the high-verifiability or the low-verifiability version. Assignment of versions is randomized across participants so that, for each snippet, both versions are observed across the participant pool.
+
+The order of snippets is randomized for each participant to mitigate order effects. Participants are not allowed to return to previous tasks once they proceed.
+
+The interface records:
+\begin{itemize}
+    \item time spent reading the code,
+    \item time spent answering the question,
+    \item the final answer provided by the participant.
+\end{itemize}
+
+Participants may pause the timer when not actively working. Short breaks may be incorporated to reduce fatigue.
+
+\subsubsection{Control of Confounding Factors}
+
+The study design incorporates several mechanisms to control potential confounding factors.
+
+Structural properties of the code are controlled by selecting transformations that minimally alter code length and control flow. Any residual variation in code size or complexity is measured and can be included as a covariate in the analysis.
+
+Snippet-specific difficulty is controlled through the paired design, where each underlying method appears in both treatment conditions across participants. Snippet is included as a random effect in the statistical model.
+
+Participant-specific differences in ability and speed are addressed by including participant as a random effect. Background information may also be collected and used as additional covariates.
+
+Order effects such as fatigue or learning are mitigated through randomization and are explicitly modeled using snippet order as a covariate.
+
+\subsubsection{Statistical Analysis}
+
+We analyze the data using linear mixed-effects models.
+
+The primary model includes:
+\begin{itemize}
+    \item a fixed effect for verifiability condition,
+    \item random intercepts for participants and snippets,
+    \item a covariate for snippet order.
+\end{itemize}
+
+Additional fixed effects may be included to account for variation across checkers and transformations. Interaction terms can be used to explore whether the effect of verifiability differs across these dimensions.
+
+The primary quantity of interest is the effect of verifiability condition on comprehension time. Statistical significance is assessed using standard inferential procedures on the model coefficients.
+
+\subsubsection{Summary}
+
+The study is a controlled experiment that estimates the effect of verifiability on comprehensibility within a fixed verification ecosystem. Verifiability is manipulated through carefully designed, semantics-preserving transformations that induce false positive warnings. The design balances control and generalizability by fixing key aspects of the verification setting while sampling multiple transformations. Mixed-effects analysis is used to account for variability across participants and snippets and to isolate the effect of the treatment.
+

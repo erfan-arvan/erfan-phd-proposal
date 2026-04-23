@@ -1,26 +1,12 @@
-% Should you use a macro for your tool name or write it directly in the
-% paper text?  Use a macro like this for your tool's name if any of the
-% following applies:
-%  * You need to change the tool name for anonymized submission and then
-%    change it back.
-%  * Your tool name is also a word that appears elsewhere in the paper
-%    with a different meaning (such as if your tool name is an English
-%    word) and you might rename the tool later.
-%  * You would ordinarily use a macro because the name is hard to type or
-%    ugly to read in the LaTeX source.  This might be the case if the tool
-%    name contains unusual formatting, such as "IDE^{\mathit{al}}" or small
-%    capital letters.  But it is best to avoid such cuteness in tool names.
-%  * You find it more convenient or readable to use the macro.  There is
-%    not a big difference between writing the tool name or using the macro,
-%    so go with whichever one you prefer.
-% If the macro exists, never use your tool's name directly in the text:
-% always use the macro.
-% (Some people name the macro "\tool", but that makes the paper harder to
-% read for no real benefit.  The macro for the tool name can be trivially
-% replaced throughout the paper if necessary.)
+% Use a macro like this for your tool's name. Do not use your tool's name
+% in the text: always use the macro.
 \newcommand{\theTypeInferenceFramework}{the Type Inference Framework\xspace}
 \newcommand{\TheTypeInferenceFramework}{The Type Inference Framework\xspace}
 \newcommand{\TIF}{TIF\xspace}
+%% Alternate formulation; use whichever of the two you prefer:
+% \newcommand{\tool}{the Type Inference Framework\xspace}
+% \newcommand{\Tool}{The Type Inference Framework\xspace}
+% \newcommand{\toolShort}{TIF\xspace}
 
 \newcommand{\conferencePageLimit}{10}
 
@@ -28,17 +14,14 @@
 \newcommand{\todo}[1]{{\color{red}\bfseries [[#1]]}}
 %% Comment or uncomment this line.
 %\renewcommand{\todo}[1]{\relax}
-% Don't show todo commands if the \notodocomments macro is defined.
+
+\newcommand{\manu}[1]{\todo{#1 --MS}}
+\newcommand{\mk}[1]{\todo{#1 --Martin}}
+
+% Don't show todo commands if this macro is defined.
 \ifdefined\notodocomments
   \renewcommand{\todo}[1]{\relax}
 \fi
-
-% Text in \iflongversion...fi is rendered if the \createlongversion macro is defined.
-\newif\iflongversion
-\ifdefined\createlongversion
-  \longversiontrue
-\fi
-\newcommand{\longversion}[1]{\iflongversion #1\else\relax\fi}
 
 % Use like: \ifanonymous{ANONYMOUS TEXT}\else{NON-ANONNYMOUS TEXT}\fi
 % where the "\else{NON-ANONNYMOUS TEXT}" may be omitted.
@@ -122,7 +105,37 @@
 
 \newcommand{\ie}{i.e.,\xspace}
 \newcommand{\eg}{e.g.,\xspace}
+\newcommand{\etal}{et. al.\xspace}
 
-\hyphenation{Deep-Seek}
-\hyphenation{white-space}
-\hyphenation{trans-piles trans-piler trans-pilers trans-pila-tion}
+
+\newcommand{\accOutput}{accOutput\xspace}
+\newcommand{\timeOutput}{timeOutput\xspace}
+
+
+%-----------------
+
+%%set to false to hide all the comments
+\newboolean{showcomments}
+\setboolean{showcomments}{true}
+
+\ifthenelse{\boolean{showcomments}}
+{\newcommand{\nb}[2]{
+		\fbox{\bfseries\sffamily\scriptsize#1}
+		{\sf\small$\blacktriangleright$\textit{#2}$\blacktriangleleft$}
+	}
+	\newcommand{\cvsversion}{\emph{\scriptsize$-$Id: macro.tex,v 1.9 2005/12/09 22:38:33 Exp $}}
+}
+{\newcommand{\nb}[2]{}
+	\newcommand{\cvsversion}{}
+}
+
+\newcommand{\re}{\textcolor{red}{\textbf{[REF]}\xspace}}
+\newcommand\os[1]{{\color{blue} \nb{OSCAR}{#1}}}
+\newcommand\martin[1]{{\color{red} \nb{MARTIN}{#1}}}
+\newcommand\erfan[1]{{\color{purple} \nb{ERFAN}{#1}}}
+\newcommand\nadeeshan[1]{{\color{brown} \nb{NADEESHAN}{#1}}}
+
+
+%remove indentation of itemized/enumeration lists, reduce vertical spacing of bullets
+\setlist[itemize]{leftmargin=*, noitemsep, topsep=1pt}
+\setlist[enumerate]{leftmargin=*, noitemsep, topsep=1pt}
