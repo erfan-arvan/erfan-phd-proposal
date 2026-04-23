@@ -31,7 +31,7 @@ We define code verifiability as the effort required for a developer to use a ver
 
 Directly measuring verification effort would require controlled studies with developers actively using verification tools, which is difficult to scale. Therefore, following prior work, we operationalize verifiability using an automated proxy based on the behavior of static analysis tools\todo{We have to be careful here not to include non-verification static analysis tools, such as heuristic bug-finding tools. Make sure that this definition includes a notion of soundness or ``building a proof internally''. Maybe base it on the presence or absence of theoretically sound deductive reasoning? That's what we did for the FSE 2023 paper: Infer counts, because its underlying analysis is biabduction (a proof technique), even though the tool itself is unsound, because it uses heuristics to decide which warnings to report. Given the study design below, though, I think you can get away with ``sound'': CF checkers are (supposed to be) sound.}.
 
-In this study, we focus on the Checker Framework and select a small number of its checkers\todo{Based on what criteria?}. Within each checker, we consider its most common warning types as identified in the literature and documentation\todo{Why? This will not only be inconvenient to do, but also you don't really use the result of this analysis as far as I can tell.}. We then operationalize verifiability in terms of the presence or absence of false positive warnings under this fixed verification setting.
+In this study, we focus on the Checker Framework and select a small number of its checkers\todo{Based on what criteria?}\todo{Must also justify choice of the CF}. Within each checker, we consider its most common warning types as identified in the literature and documentation\todo{Why? This will not only be inconvenient to do, but also you don't really use the result of this analysis as far as I can tell.}. We then operationalize verifiability in terms of the presence or absence of false positive warnings under this fixed verification setting.
 
 A false positive warning occurs when the tool reports a potential violation of a safety property in code that is in fact correct. Such warnings typically arise because the tool is unable to infer necessary facts about the program due to limitations in its analysis or due to implicit assumptions in the code. Code that produces false positive warnings requires additional effort from developers, who must either refactor the code, provide additional specifications, or manually inspect and dismiss the warning.
 
@@ -49,20 +49,21 @@ Unlike prior designs\todo{cite? I'm not sure what study or studies you're referi
 
 \todo{Should this be a subsubsection?}
 
-Code comprehensibility refers to how easily a developer can construct a coherent mental model of a piece of code that supports reasoning about its behavior. This construct is inherently relative and cannot be directly observed.
+Code comprehensibility refers to\todo{``refers to'' is vague. Are you defining it this way or not?} how easily a developer can construct a coherent mental model of a piece of code that supports reasoning about its behavior. This construct is inherently relative\todo{this is a strong, unnecessary claim. Maybe you mean ``inherently subjective'' or something similar? ``Relative'' in the context of comprehensibility usually refers to comparing snippets rather than analyzing them in isolation; plenty of researchers would argue that ``absolute'' comprehensibility (i.e., non-relative) is the actual construct of interest, since not all dev work requires comparing two versions of code.} and cannot be directly observed.
 
 In prior work, we defined code comprehensibility operationally through expert agreement on the relative difficulty of understanding code snippets. Using a Delphi-style protocol, multiple experienced developers iteratively ranked snippets by comprehension difficulty and resolved disagreements through structured feedback. The resulting rankings provided a practical approximation of ground-truth comprehensibility.
 
 Because expert-based evaluation is costly and does not scale, we subsequently evaluated a range of proxy measures using student studies. These studies showed that proxies based on input-output reasoning about program behavior align most strongly with expert judgments. In particular, the time required to correctly answer input-output questions was the most reliable proxy.
 
 Based on these findings, we adopt input-output comprehension tasks and use response time for correct answers as the primary measure of comprehensibility in this study. This measure captures the effort required to understand the behavior of the code while remaining scalable and suitable for controlled experiments.
+
 \subsection{Methodology}
 
 \subsubsection{Study Overview}
 
-The goal of this study is to estimate the effect of code verifiability on code comprehensibility under a controlled verification setting. We conduct a controlled experiment in which participants perform input-output comprehension tasks on semantically equivalent versions of Java methods that differ only in their verifiability with respect to the \textit{Checker Framework}. Verifiability is operationalized relative to a fixed verification ecosystem, and is manipulated through semantics-preserving code transformations that induce or eliminate false positive warnings produced by selected checkers.
+The goal of this study is to estimate the effect of code verifiability on code comprehensibility under a controlled verification setting\todo{I'm not sure if you mean ``verification'' here in the technical sense. If so, I wouldn't use it here; the ``controlled'' part of the experiment isn't only verification-related.}. We conduct a controlled experiment in which participants perform input-output comprehension tasks on semantically equivalent versions of Java methods that differ only in their verifiability with respect to the \textit{Checker Framework}\todo{I'm not sure what the italics here are intended to convey}. Verifiability is operationalized relative to a fixed verification ecosystem, and is manipulated through semantics-preserving code transformations that induce or eliminate false positive warnings produced by selected checkers.\todo{Include an example of a snippet with/without the treatment in a figure.}
 
-The study is designed as a multi-item, between-subjects experiment with repeated measures, where each participant completes multiple tasks and each code snippet appears in two versions across participants. The analysis is conducted using mixed-effects models to account for variability across participants and snippets.
+The study is designed as a multi-item, between-subjects experiment with repeated measures, where each participant completes multiple tasks and each code snippet appears in two versions across participants. The analysis is conducted using mixed-effects models to account for variability across participants and snippets.\todo{Justify this choice: why can't you use a within-subjects design, which is cheaper?}\todo{How do you know you will have sufficient discriminatory power with this design to find an effect? How many students are you planning to run this experiment on?}
 
 \subsubsection{Independent Variable and Treatment Definition}
 
@@ -74,7 +75,7 @@ This variable is manipulated as a binary factor with two levels:
     \item \textbf{Low-verifiability condition}: a semantically equivalent version of the same snippet produces one or more false positive warnings under the same checker.
 \end{itemize}
 
-The treatment is therefore not an abstract notion of verifiability, but a concrete manipulation of code that changes whether the checker can successfully verify certain safety properties. This manipulation is implemented through controlled code transformations that preserve program semantics while affecting the ability of the checker to reason about the code.
+The treatment is therefore not an abstract notion of verifiability, but a concrete manipulation of code that changes whether the checker can successfully verify certain safety properties. This manipulation is implemented through controlled code transformations that preserve program semantics while affecting the ability of the checker to reason about the code\todo{A definition of semantics preservation is probably necessary here. I think you want a fairly standard definition based on inputs and outputs, but in some domains semantics preservation requires e.g., that the same values end up in the same slots in memory; the transformations you're going to want to do here will almost certainly not preserve these kind of low-level details. Cf. different definitions of infection in mutation testing.}.
 
 \subsubsection{Dependent Variable}
 
@@ -82,13 +83,13 @@ The dependent variable is \textit{code comprehensibility}, operationalized using
 
 The primary outcome is the \textit{time required to correctly answer an input-output comprehension question} for a given code snippet. This measure captures the effort required for a participant to understand the behavior of the code. Time is recorded from the moment the participant begins the task until a correct answer is submitted.
 
-Correctness is also recorded as a secondary measure, and time-based analyses focus primarily on correct responses.
+Correctness is also recorded as a secondary measure, and time-based analyses focus primarily on correct responses\todo{What does ``focus primarily'' mean? Are you excluding the answers from students who get the answers wrong? I don't think there's a justification for doing so, since in our ASE26 work I don't think we did that; if we did, some of the writing is almost certainly making false claims.}.
 
 \subsubsection{Verification Setting and Scope Conditions}
 
 The study fixes several aspects of the verification context to ensure a well-defined construct of verifiability.
 
-The verification ecosystem is restricted to the Checker Framework. Within this framework, we select at most two checkers based on expert judgment, prioritizing checkers that are widely used and that produce meaningful safety warnings. For each selected checker, we focus on its most frequent and representative warning types, as identified from the checker documentation and associated research papers.
+The verification ecosystem is restricted to the Checker Framework. Within this framework, we select at most two checkers based on expert judgment, prioritizing checkers that are widely used and that produce meaningful safety warnings. For each selected checker, we focus on its most frequent and representative warning types, as identified from the checker documentation and associated research papers.\todo{I think you should make these choices now, or at least choose one checker to definitely include, so that you can include concrete examples. I suggest the Nullness Checker or NullAway.}
 
 These choices define the scope of the study. The results are therefore interpreted as applying to verifiability within the selected Checker Framework setting, rather than to all possible verification tools or warning types.
 
@@ -127,11 +128,11 @@ static void f(int[] a, int i) {
 }
 \end{lstlisting}
 \end{minipage}
-\caption{Example of a semantics-preserving transformation that affects verifiability. Encapsulating a safety condition in a helper method prevents the checker from refining constraints, leading to false positive warnings.}
+\caption{Example of a semantics-preserving transformation that affects verifiability. Encapsulating a safety condition in a helper method prevents the checker from refining constraints, leading to false positive warnings.\todo{What's the purpose of ``needsPositive'' in this example. I think it can be excluded without weakening the point. And, there's a reason to exclude it: it is not defined anywhere, and defining it will require you to introduce the \<@Positive> annotation, which you probably don't want to explain.}
 \label{fig:verifiability-example}
 \end{figure}
 
-We construct a set of candidate transformations using the following process. First, we review the research papers and official documentation of the selected checkers to identify common causes of false positive warnings. These sources typically describe patterns that hinder the checker’s ability to infer required properties. If necessary, we supplement this information by mining real-world repositories, searching for commits or issues that reference false positives associated with the selected checkers.
+We construct a set of candidate transformations using the following process. First, we review the research papers and official documentation\todo{but not the bug trackers? Whyever not? Bug trackers should definitely be included, among the others} of the selected checkers to identify common causes of false positive warnings. These sources typically describe patterns that hinder the checker’s ability to infer required properties. If necessary, we supplement this information by mining real-world repositories, searching for commits or issues that reference false positives associated with the selected checkers.\todo{Bug trackers are ok, but I don't think you should even begin to suggest that you will try to mine these patterns from real repositories. That's an interesting project in-and-of itself and would be fun to do, but not as part of this study.}
 
 From these sources, we derive a set of candidate code transformations that:
 \begin{enumerate}
