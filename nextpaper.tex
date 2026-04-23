@@ -132,7 +132,7 @@ static void f(int[] a, int i) {
 \label{fig:verifiability-example}
 \end{figure}
 
-We construct a set of candidate transformations using the following process. First, we review the research papers and official documentation\todo{but not the bug trackers? Whyever not? Bug trackers should definitely be included, among the others} of the selected checkers to identify common causes of false positive warnings. These sources typically describe patterns that hinder the checker’s ability to infer required properties. If necessary, we supplement this information by mining real-world repositories, searching for commits or issues that reference false positives associated with the selected checkers.\todo{Bug trackers are ok, but I don't think you should even begin to suggest that you will try to mine these patterns from real repositories. That's an interesting project in-and-of itself and would be fun to do, but not as part of this study.}
+We construct a set of candidate transformations using the following process. First, we review the research papers and official documentation\todo{but not the bug trackers? Whyever not? Bug trackers should definitely be included, among the others} of the selected checkers to identify common causes of false positive warnings. These sources typically describe patterns that hinder the checker’s ability to infer required properties. If necessary, we supplement this information by mining real-world repositories, searching for commits or issues that reference false positives associated with the selected checkers.\todo{Bug trackers are ok, but I don't think you should even begin to suggest that you will try to mine these patterns from real repositories. That's an interesting project in-and-of itself and would be fun to do, but not as part of this study: https://docs.google.com/document/d/1vhhb3SJESImnxMA0q196fmZp_1vHsj9X9Q9ylmU8i14/edit?usp=sharing. You can participate if we recruit an undergrad and you're interested.}
 
 From these sources, we derive a set of candidate code transformations that:
 \begin{enumerate}
@@ -166,7 +166,7 @@ For each selected method, we construct two versions:
 
 All transformations are manually validated to ensure semantic equivalence. Comments and documentation are removed to prevent leakage of semantic information. Identifier names are preserved across versions to maintain consistency.
 
-Care is taken to ensure that the two versions of each snippet are structurally similar. In particular, transformations are selected and applied so that differences in code length, control flow, and overall structure are minimal. This reduces the risk that differences in comprehension time are driven by factors other than verifiability.
+Care is taken to ensure that the two versions of each snippet are structurally similar. In particular, transformations are selected and applied so that differences in code length, control flow, and overall structure are minimal.\todo{``minimal'' here is vague. Maybe give an example of what you will and won't permit? E.g., is a change to exceptional control flow ok?} This reduces the risk that differences in comprehension time are driven by factors other than verifiability.
 
 \subsubsection{Participants}
 
@@ -197,17 +197,17 @@ Participants may pause the timer when not actively working. Short breaks may be 
 
 The study design incorporates several mechanisms to control potential confounding factors.
 
-Structural properties of the code are controlled by selecting transformations that minimally alter code length and control flow. Any residual variation in code size or complexity is measured and can be included as a covariate in the analysis.
+Structural properties of the code are controlled by selecting transformations that minimally alter code length and control flow. Any residual variation in code size or complexity is measured and can be included as a covariate in the analysis.\todo{How will you measure complexity? Don't say ``cyclomatic complexity''.}
 
 Snippet-specific difficulty is controlled through the paired design, where each underlying method appears in both treatment conditions across participants. Snippet is included as a random effect in the statistical model.
 
-Participant-specific differences in ability and speed are addressed by including participant as a random effect. Background information may also be collected and used as additional covariates.
+Participant-specific differences in ability and speed are addressed by including participant as a random effect. Background information may also be collected and used as additional covariates.\todo{Why ``may''? I think you should definitely do this. What's the harm?}
 
 Order effects such as fatigue or learning are mitigated through randomization and are explicitly modeled using snippet order as a covariate.
 
 \subsubsection{Statistical Analysis}
 
-We analyze the data using linear mixed-effects models.
+We analyze the data using linear mixed-effects models.\todo{Cite the specific model or models you plan to use - I think you need to convince the committee they are reasonable, so you should know exactly what you are planning here.}\todo{Justify why a linear mixed-effects model is correct in this setting.}
 
 The primary model includes:
 \begin{itemize}
@@ -216,7 +216,7 @@ The primary model includes:
     \item a covariate for snippet order.
 \end{itemize}
 
-Additional fixed effects may be included to account for variation across checkers and transformations. Interaction terms can be used to explore whether the effect of verifiability differs across these dimensions.
+Additional fixed effects may be included to account for variation across checkers and transformations. Interaction terms can be used to explore whether the effect of verifiability differs across these dimensions.\todo{Include everything you mentioned in earlier sections here, for consistency. E.g., background effects, code size delta, ...}
 
 The primary quantity of interest is the effect of verifiability condition on comprehension time. Statistical significance is assessed using standard inferential procedures on the model coefficients.
 
