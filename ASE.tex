@@ -1,5 +1,5 @@
 \section{On the Reliability of Code Comprehension Proxies}
-
+\label{ase}
 
 \subsection{Abstract}
 Prior work on code comprehension uses different \emph{comprehension proxies}---for example,
@@ -84,8 +84,6 @@ In summary, our contributions are:
 
  
 \section{Background and Related Work}
-\label{sec:relatedwork}
-
 
 
 \textbf{Universal definition for code comprehensibility.} Despite its importance, the code comprehension construct still lacks a precise definition that primary studies can rely on in their design, let alone a standardized measurement method or even consensus on which features to include in such measurements~\cite{chin2026put, Wyrich:ACS23}.
@@ -106,59 +104,7 @@ These findings motivate our study by suggesting that proxies derived from prior 
 
 
 \subsection{Comprehension Tasks in Prior Work}
-\label{sec:rw-tasks}
-
-\begin{table}
-\centering
-\caption{Taxonomy of comprehension tasks based on Wyrich~\etal~\cite{Wyrich:ACS23}, with updated study counts through March 2026.}
-\resizebox{\columnwidth}{!}{
-\begin{tabular}{p{3cm} l c}
-  \toprule
- Task Category & Task & Number of Studies \\ 
-  \midrule
-
-\multirow{6}{3cm}{Tc1: Provide information about the code}
-    & Answer comprehension questions & 37 \\ 
-    & Determine output of a program & 30 \\ 
-    & Summarize code verbally or textually & 25 \\ 
-    & Recall (parts of) the code & 7 \\ 
-    & Match with diagram or similar code & 3 \\
-    & Determine code trace & 1 \\ 
-  \midrule
-
-\multirow{6}{3cm}{Tc2: Provide personal opinion}
-  & Rate code comprehensibility & 13 \\ 
-  & Other subjective indications & 7 \\ 
-  & Rate task difficulty or task load & 5 \\ 
-  & Rate confidence in answer/understanding & 5 \\ 
-  & Compare or rank code snippets & 5 \\
-  & Rate own code understanding & 2 \\  
-  \midrule
-
-\multirow{2}{3cm}{Tc3: Debug code}
-  & Find a bug & 9 \\ 
-  & Extend the code & 4 \\ 
-  \midrule
-
-\multirow{4}{3cm}{Tc4: Maintain code}
-    & Fix a bug & 4 \\ 
-    & Cloze test on code & 3 \\ 
-    & Refactor code & 3 \\ 
-    & Determine if code is correct & 1 \\
- 
-   \bottomrule
-\end{tabular}
-}
-\label{tab:proxies-wyrich}
-\end{table}
- 
-\Cref{tab:proxies-wyrich} extends the taxonomy of comprehension tasks in Wyrich~\etal's survey~\cite{Wyrich:ACS23}
-with papers published on or before March 25, 2026 but after their literature search.
-While there is significant diversity in tasks, 
-the literature has a strong bias toward \textbf{Tc1} and, to a lesser extent, 
-\textbf{Tc2}. The most common tasks in these categories are answering questions of 
-various types, free-text summarization, and subjective ratings; together, these 
-tasks dominate the literature. 
+See section 2 of the proposal to see the survey of the comprehension tasks.
 
 \textbf{Open coding for comprehensibility questions.}
 \label{sec:open-coding}
@@ -216,38 +162,7 @@ The full categorization has more levels of detail and is available in our replic
 \end{figure}
 
 \subsection{Comprehension Measures in Prior Work}
-\label{sec:rw-measures}
-
-\begin{table}[t]
-\centering
-\small
-\renewcommand{\arraystretch}{1.1}
-\caption{Frequency of comprehension measure types based on the taxonomy of Wyrich~\etal~\cite{Wyrich:ACS23}, with updated study counts through March 2026.}
-\begin{tabular}{lclc}
-\toprule
-Measure Type & Studies & Measure Type & Studies \\
-\midrule
-Correctness & 80 & Physiological & 30 \\
-Time & 50 & Aggregation & 6 \\
-Subjective rating & 37 & Others & 6 \\
-\bottomrule
-\end{tabular}
-\label{tab:measures}
-\end{table}
- 
-\Cref{tab:measures} extends the comprehension measure survey data from Wyrich~\etal~\cite{Wyrich:ACS23} with
-that from studies published before March 25, 2026.
-\emph{Correctness} (also referred to as \emph{accuracy} ~\cite{S29}) compares a study participant's (\ie a subject) answer to a known ground truth~\cite{Nielebock:ESE2019, Peitek:ICPC20, Peitek:ICSE2021, Ribeiro:ESE23, Karas:TSE2024, Park:ESE24, Alakmeh:ASE2024, Elfares:2025, Flint:2026, Abdelsalam:ESE2026}.
-\emph{Time} captures how long a subject takes to complete 
-a task, regardless of answer correctness~\cite{Nielebock:ESE2019, Peitek:ICPC20, Peitek:ICSE2021, Karas:TSE2024, Park:ESE24, Alakmeh:ASE2024, Elfares:2025, Abdelsalam:ESE2026}.
-\emph{Subjective ratings} are self-reported perceptions, such as 
-Likert-scale responses to questions~\cite{Nielebock:ESE2019, Peitek:ICSE2021, Ribeiro:ESE23, Abdelsalam:ESE2026, Alakmeh:ASE2024, Elfares:2025, Bergum:TOSEM2026}.
-\emph{Physiological} measurements capture responses of the human body or brain when performing code comprehensibility tasks. 
-Eye-tracking~\cite{Peitek:ICPC20, Abbad-Andaloussi:ICPC22, Park:ESE24, Abdelsalam:ESE2026}, fMRI~\cite{Peitek:ICSE2021} and EEG~\cite{Bergum:TOSEM2026} are the most common measures in this category.
-\emph{Aggregation} combines two or more other measures~\cite{Ribeiro:ESE23, Alakmeh:ASE2024, Gao:EASE2025}; 
-for example, ``time to correctly answer a question'' aggregates correctness 
-and time measures.
-\emph{Other} includes measures that do not fit into the above categories, such as using code metrics to measure comprehensibility~\cite{33-8, Nielebock:ESE2019}.
+See section 2 in this proposal for a survey of the comprehension measures.
 This taxonomy guided our choice of measures (\cref{sec:our-measures}).
 
  
