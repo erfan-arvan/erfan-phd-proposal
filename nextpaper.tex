@@ -142,25 +142,21 @@ These transformations are not treated as independent experimental factors. Inste
 
 \subsubsection{Dataset Construction}
 
-We construct a dataset of Java methods drawn from high-quality, actively maintained repositories. Candidate repositories are selected based on criteria such as number of commits, number of pull requests, number of stars, and recent activity.
+We restrict the study to a single programming language to control for language as a potential confounding variable (see Section~\ref{sec:confounders}). We select Java due to its widespread use in prior code comprehension studies~\cite{Wyrich:ACS23} and its continued prevalence in industry~\cite{TIOBEIndex}.
 
-From these repositories, we extract methods that satisfy the following constraints:
+The snippets are minimal Java program that includes a targeted method for which two semantically equivalent versions (high and low verifiability) will be created, and the comprehension tasks will be designed for that particular method. 
+
+The target method must satisfy the following constraints:
 \begin{itemize}
     \item all types used in the method are from the JDK,
     \item the method is static,
     \item the method has at least one parameter and returns a value,
-    \item the method contains a moderate number of lines of code to ensure manageable task duration.
+    \item the method contains a moderate number of lines of code to ensure a manageable task duration.
 \end{itemize}
 
-For each selected method, we construct two versions:
-\begin{itemize}
-    \item a high-verifiability version that produces no warnings,
-    \item a low-verifiability version obtained by applying a selected transformation that induces a false positive warning.
-\end{itemize}
+When the methods with these constraints are found, we will use slicers like Specimen~\cite{nguyen2025static} to create the snippet the includes that method. Specimen constructs a smaller program that guarantees that a typechecker will produce the same result on the sliced program when considering only the target method—that is, a type-directed slicer preserves the target program’s compile-time semantics, from the view of a specific typechecker, with respect to the target method. This is required because in order to be able to run the verification tools on it, we need to have a compilable program that includes the target method.
 
-All transformations are manually validated to ensure semantic equivalence. Comments and documentation are removed to prevent leakage of semantic information. Identifier names are preserved across versions to maintain consistency.
-
-Care is taken to ensure that the two versions of each snippet are structurally similar. In particular, transformations are selected and applied so that differences in code length, control flow, and overall structure are minimal.\todo{``minimal'' here is vague. Maybe give an example of what you will and won't permit? E.g., is a change to exceptional control flow ok?} This reduces the risk that differences in comprehension time are driven by factors other than verifiability.
+To choose these methods, 
 
 \subsubsection{Participants}
 
