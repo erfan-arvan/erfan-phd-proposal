@@ -2,9 +2,31 @@
 \label{sec:relatedworkMain}
 
 \subsection{Definition of Code Comprehensibility}
+\label{sec:main-def}
 
+Code comprehensibility lacks a widely accepted and practically operational definition for empirical study design~\cite{Wyrich:ACS23}. As a result, researchers often define comprehensibility in terms of the measurements they employ.
 
-\subsection{Comprehension Tasks in Prior Work}
+Comprehension is an internal cognitive process and cannot be directly observed or measured~\cite{f1}.
+
+Efforts to develop a cognitive model of code comprehension have not yet been successful, largely due to the complexity of the underlying mental processes and the difficulty of formally modeling them. Pennington~\cite{penningtonModel}, in the late 20th century, proposed a model of code comprehension based on a text comprehension framework—specifically, the situation model introduced by van Dijk and Kintsch in 1983~\cite{textmodel}. This work represents one of the earliest—and arguably one of the last—explicit attempts to model the cognitive processes underlying code comprehension. However, despite its use in some prior studies (e.g.,~\cite{lyu2025effects, mannes2024van}), Pennington’s model relies on relatively coarse and somewhat arbitrary abstractions of program knowledge. Moreover, its empirical validation has often depended on unreliable proxies, particularly syntax-based measures, to approximate comprehensibility. These limitations may help explain why the model has not become a standard framework for studying code comprehensibility and is not widely adopted as a reliable basis for modeling it.
+
+Prior work in psychology and program comprehension~\cite{penningtonModel,f1,f2,f3,f4} characterizes comprehension as the process of constructing a coherent internal representation (or mental model) of the “material” (\eg text or code), which supports tasks such as recall, reasoning, or modification.
+
+We adopt this view and define code comprehensibility in terms of how easily such a representation can be constructed relative to a reference point (see Section~\ref{sec:ground-truth} of our recently submitted paper).
+
+Finally, comprehensibility, readability, and legibility are distinct constructs; however, they have often been used interchangeably in prior work~\cite{Wyrich:ACS23}. These constructs concern different aspects of code: comprehensibility relates to constructing a coherent internal representation of the code; readability relates to naming, syntactic structure, and code organization; and legibility relates to visual properties such as font, spacing, indentation, and color contrast.
+
+\subsection{Code Comprehensibility Proxies}
+Since comprehension is an internal cognitive process that cannot be directly observed, most prior empirical studies rely on \emph{comprehension proxies}:
+observable \textit{measurements} collected from humans performing specific comprehension \textit{tasks}. Common tasks (See~\ref{sec:rw-tasks}) in the literature include reading code~\cite{Karas:TSE2024}, answering comprehension questions~\cite{Park:ESE24, Peitek:ICPC20, Abdelsalam:ESE2026, Gao:EASE2025}, summarizing functionality~\cite{Karas:TSE2024,Peitek:ICPC20, Flint:2026}, or finding or fixing a bug~\cite{Nielebock:ESE2019, Flint:2026}.
+Common measures in the literature  (See ~\ref{sec:rw-measures}) are time~\cite{Nielebock:ESE2019, Peitek:ICPC20, Peitek:ICSE2021, Karas:TSE2024, Park:ESE24, Alakmeh:ASE2024, Elfares:2025, Abdelsalam:ESE2026}, accuracy~\cite{Nielebock:ESE2019, Peitek:ICPC20, Peitek:ICSE2021, Ribeiro:ESE23, Karas:TSE2024, Park:ESE24, Alakmeh:ASE2024, Elfares:2025, Flint:2026, Abdelsalam:ESE2026}, eye movement~\cite{Peitek:ICPC20, Abbad-Andaloussi:ICPC22, Park:ESE24, Elfares:2025, Abdelsalam:ESE2026, Flint:2026}, or subjective ratings~\cite{Peitek:ICSE2021, Ribeiro:ESE23, Alakmeh:ASE2024, Elfares:2025, Bergum:TOSEM2026, Abdelsalam:ESE2026}.
+The task and measure are inseparable when interpreting proxy measurements. For example, accuracy may be meaningless if the task is poorly designed (\eg due to vague or trivial questions),
+but it can be informative when paired with a well-designed task. Likewise, a meaningful task may yield little insight when paired with an uninformative measure.
+Comprehension proxies have been used not only to investigate how different factors influence comprehensibility~\cite{S4,S49,Peitek:TSE18,Siegmund:ICSE14,Stapleton:ICPC2020,Wyrich:ACS23} but also to develop predictive models that help developers measure and control comprehension difficulty during software evolution~\cite{Scalabrino:TSE19,Raymond:TSE10,Lavazza:ESE2023, De:2025}.
+
+In Section~\ref{ase}, we describe our recent paper, in which we evaluated 14 commonly used proxies from prior studies (see Section~\ref{sec:our-proxies} for more information on how we selected the proxies). We found that proxies (1) derived from input--output questions and (2) based on response time rather than accuracy are particularly reliable. In contrast, proxies derived from questions about program syntax (rather than behavior) are especially unreliable.
+
+\subsubsection{Comprehension Tasks in Prior Work}
 \label{sec:rw-tasks}
 
 \begin{table}
@@ -57,10 +79,9 @@ While there is significant diversity in tasks,
 the literature has a strong bias toward \textbf{Tc1} and, to a lesser extent, 
 \textbf{Tc2}. The most common tasks in these categories are answering questions of 
 various types, free-text summarization, and subjective ratings; together, these 
-tasks dominate the literature. 
+tasks dominate the literature. In Sec.~\ref{sec:open-coding}, we describe how, in our recent paper, we conducted an open-coding analysis of papers that use the ``answer comprehension questions'' task to gain more detailed insights.
 
-
-\subsection{Comprehension Measures in Prior Work}
+\subsubsection{Comprehension Measures in Prior Work}
 \label{sec:rw-measures}
 
 \begin{table}[t]
@@ -94,5 +115,171 @@ for example, ``time to correctly answer a question'' aggregates correctness
 and time measures.
 \emph{Other} includes measures that do not fit into the above categories, such as using code metrics to measure comprehensibility~\cite{33-8, Nielebock:ESE2019}.
 
+\subsection{Code Comprehension Confounders}
+\label{sec:confounders}
 
+One important threat to validity is the presence of confounding variables. A confounder is an extraneous factor that influences the variables under study in a way that obscures their true relationship~\cite{pourhoseingholi2012control}. In code comprehension experiments, commonly discussed confounders include programming experience and familiarity with the studied code~\cite{siegmund2015confounding}. Failing to identify and control for such factors can compromise internal validity and lead to false conclusions~\cite{pourhoseingholi2012control}.
+
+To support researchers in addressing these issues, Siegmund and Schumann~\cite{siegmund2015confounding} conducted a comprehensive literature survey of program comprehension studies published between 2001 and 2010. Their work resulted in a catalog of confounding parameters, along with recommended measurement and control techniques, aimed at improving the validity and reliability of empirical studies.
+
+Building on this catalog, we summarize the most relevant confounding variables and their commonly used control mechanisms. Table~\ref{tab:individual-confounders-control} presents individual-level confounders, while Table~\ref{tab:experimental-confounders-control} summarizes confounders related to the experimental setting.
+
+Individual confounders arise from characteristics of the participants themselves and can influence their performance independently of the experimental treatment. These confounders can be broadly grouped into three categories. \textit{Individual background} includes relatively stable attributes, such as demographic and cognitive characteristics, that participants bring to the study. \textit{Individual knowledge} captures acquired skills and experience, reflecting differences in expertise, familiarity, and learned competencies that directly affect how participants approach and solve tasks. Finally, \textit{individual circumstances} refer to transient states, such as participants’ physical or psychological condition during the experiment, which may vary over short time scales and influence performance. Together, these categories highlight that variation in participant characteristics—both stable and situational—can introduce bias if not properly controlled.
+
+Experimental confounders arise from the study design, execution, and materials, and can systematically influence participants’ behavior and the validity of results. These confounders can be grouped into four categories. \textit{Subject-related confounders} stem from participants’ reactions to the experimental setting, such as evaluation apprehension and the Hawthorne effect, which may alter behavior due to perceived observation; these are typically mitigated through anonymity and blinding of study hypotheses. Other factors in this category, including process conformance, study-object coverage, time pressure, and visual effort, can bias performance if participants deviate from instructions or experience unequal task conditions, and are controlled through supervision, standardization, and normalization. \textit{Technical confounders} arise from the experimental infrastructure itself, including issues such as data consistency, instrumentation, mono-method bias, mono-operation bias, and technical failures; these are addressed through validated tools, pilot studies, redundant measurements, and careful data verification. \textit{Context-related confounders} reflect broader experimental dynamics, such as learning effects, ordering effects, participant dropout (mortality), experimenter bias (e.g., the Rosenthal effect), and selection bias; these are commonly mitigated through counterbalancing, between-subject designs, standardized procedures, and appropriate sampling strategies. Finally, \textit{study-object-related confounders} concern properties of the artifacts and tasks used in the experiment, including differences in content, programming language, layout, size, and task design, all of which can directly impact comprehension difficulty; these are controlled by ensuring comparable materials, standardizing representations, and validating task difficulty through pilot studies.
+
+\begin{table*}[t]
+\centering
+\caption{Individual-Level Confounders and Recommended Control Mechanisms}
+\label{tab:individual-confounders-control}
+\begin{tabular}{p{4cm} p{5.5cm} p{6.5cm}}
+\toprule
+\textbf{Category} & \textbf{Confounder} & \textbf{Recommended Control Mechanisms} \\
+\midrule
+
+\multirow{4}{*}{Individual Background}
+& Color blindness 
+& Screen participants; keep constant (exclude if relevant); use validated tests (e.g., Ishihara) \\
+
+& Culture 
+& Keep constant (same population) or randomize; measure and analyze post hoc \\
+
+& Gender 
+& Balance across groups (matching); randomization; include as covariate \\
+
+& Intelligence 
+& Matching or randomization; proxy measures (e.g., GPA/tests); post hoc statistical control \\
+
+\midrule
+
+\multirow{7}{*}{Individual Knowledge}
+& Ability 
+& Pretest; matching; use as covariate \\
+
+& Domain knowledge 
+& Pre-screening; training; keep constant or measure and control \\
+
+& Education 
+& Recruit homogeneous sample; measure coursework background \\
+
+& Familiarity with study object 
+& Training phase; pretest; restrict to unfamiliar participants \\
+
+& Familiarity with tools 
+& Training; standardize tools; disable advanced features \\
+
+& Programming experience 
+& Matching; stratification; validated questionnaires; include as covariate \\
+
+& Reading time 
+& Measure separately; control statistically if relevant \\
+
+\midrule
+
+\multirow{3}{*}{Individual Circumstances}
+& Fatigue 
+& Short sessions; breaks; counterbalancing \\
+
+& Motivation 
+& Incentives; voluntary participation; post-task self-report \\
+
+& Treatment preference 
+& Blind conditions; measure via questionnaire; counterbalance \\
+
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
+\begin{table*}[t]
+\centering
+\caption{Experimental Confounders and Recommended Control Mechanisms}
+\label{tab:experimental-confounders-control}
+\begin{tabular}{p{4cm} p{5.5cm} p{6.5cm}}
+\toprule
+\textbf{Category} & \textbf{Confounder} & \textbf{Recommended Control Mechanisms} \\
+\midrule
+
+\multirow{7}{*}{Subject-related}
+& Evaluation apprehension 
+& Ensure anonymity; clarify no grading impact \\
+
+& Hawthorne effect 
+& Blind hypotheses; minimize observation bias \\
+
+& Process conformance 
+& Supervision; logging; discard invalid data \\
+
+& Study-object coverage 
+& Require completion; normalize results \\
+
+& Ties to memory 
+& Use meaningful identifiers; standardize materials \\
+
+& Time pressure 
+& Avoid strict limits or standardize across groups \\
+
+& Visual effort 
+& Use consistent layouts; eye-tracking if needed \\
+
+\midrule
+
+\multirow{5}{*}{Technical}
+& Data consistency 
+& Double-check data entry; automated logging \\
+
+& Instrumentation 
+& Use validated tools; pilot studies \\
+
+& Mono-method bias 
+& Use multiple measures (time, accuracy, etc.) \\
+
+& Mono-operation bias 
+& Use multiple tasks; ensure representativeness \\
+
+& Technical problems 
+& Pilot testing; exclude affected runs \\
+
+\midrule
+
+\multirow{6}{*}{Context-related}
+& Learning effects 
+& Counterbalancing; between-subject design; training phase \\
+
+& Mortality (dropout) 
+& Incentives; analyze attrition bias \\
+
+& Operationalization 
+& Use validated measures; justify proxies \\
+
+& Ordering effects 
+& Randomization; counterbalancing \\
+
+& Rosenthal effect 
+& Standardized instructions; experimenter blinding \\
+
+& Selection bias 
+& Random sampling; report limitations \\
+
+\midrule
+
+\multirow{5}{*}{Study-object-related}
+& Content of study object 
+& Use equivalent tasks; expert validation \\
+
+& Programming language 
+& Keep constant; ensure familiarity \\
+
+& Layout 
+& Standardize formatting \\
+
+& Size of study object 
+& Normalize complexity/LOC \\
+
+& Tasks 
+& Use multiple tasks; pilot for difficulty \\
+
+\bottomrule
+\end{tabular}
+\end{table*}
 
