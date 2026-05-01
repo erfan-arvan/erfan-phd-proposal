@@ -45,7 +45,7 @@ This operationalization allows us to construct paired code snippets that differ 
 
 \subsubsection{Code Comprehensibility}
 
-In prior work~\ref{ase}, we defined code comprehensibility operationally through expert agreement on the relative difficulty of understanding code snippets. Using a Delphi-style protocol, multiple experienced developers iteratively ranked snippets by comprehension difficulty and resolved disagreements through structured feedback. The resulting rankings provided a practical approximation of ground-truth comprehensibility. Because expert-based evaluation is costly and does not scale, we evaluated a range of proxy measures using student studies. The results showed that proxies based on input-output reasoning about program behavior align most strongly with expert judgments. In particular, the time required to answer input-output questions was the most reliable proxy.
+In \cref{ase}, we defined code comprehensibility operationally through expert agreement on the relative difficulty of understanding code snippets. Using a Delphi-style protocol, multiple experienced developers iteratively ranked snippets by comprehension difficulty and resolved disagreements through structured feedback. The resulting rankings provided a practical approximation of ground-truth comprehensibility. Because expert-based evaluation is costly and does not scale, we evaluated a range of proxy measures using student studies. The results showed that proxies based on input-output reasoning about program behavior align most strongly with expert judgments. In particular, the time required to answer input-output questions was the most reliable proxy.
 
 Based on these findings, we adopt input-output comprehension tasks and use response time as the primary measure of comprehensibility in this study. This measure captures the effort required to understand the behavior of the code while remaining scalable and suitable for controlled experiments.
 
@@ -145,15 +145,17 @@ We select methods satisfying the following criteria:
 \end{enumerate}
 
 Criteria (1)--(3) ensure that snippets are self-contained and do not require project-specific knowledge. Criterion (5) is required by our experimental design, which uses input--output comprehension tasks. Criterion (6) ensures that tasks remain within a reasonable time budget while still capturing meaningful behavior. Applying these filters yields a set of $N$ candidate methods.
+\todo{These criteria seem too strict to me. I think it might be a good idea to permit a small amount of ``custom classes'', especially if we plan to remove Specimin to remove everything but their definitions. This means it's okay to 1) have instance methods, and 2) for there to be non-JDK classes referenced. That will greatly expand our pool of methods.}
 
 \paragraph{Program Slicing}
-For each candidate method, we construct a minimized executable program using \emph{Specimen}, a program slicing tool. The resulting program contains only the code necessary to preserve the behavior relevant to the target method.
+For each candidate method, we construct a minimized executable program using \emph{Specimen}\todo{spelling is wrong: the tool is called ``Specimin''}, a program slicing tool. The resulting program contains only the code necessary to preserve the behavior relevant to the target method.\todo{This description of Specimin could be about any slicing tool. Be more precise.}\todo{This section should cite the Specimin paper.}
 
 The key requirement is that, for a given verification tool, the analysis result (i.e., the presence or absence of warnings) on the sliced program matches the result obtained when analyzing the full project.
 
 \paragraph{Verifiability-Controlled Construction}
 We construct snippet pairs using a two-phase procedure.
 
+\todo{Do not use the ``subparagraph'' heading. Use subsubsection and paragraph instead; this text is not in a subsubsection.}
 \subparagraph{Phase 1: Eliminating False Positives}
 We run a selected set of Checker Framework checkers on all minimized programs. For each method that produces a warning, we manually inspect whether the warning corresponds to a real defect or a false positive.
 
@@ -178,7 +180,7 @@ Transformations are applied only at suitable program locations. For example, nul
 
 These transformations are not treated as independent experimental factors. Instead, they serve as different realizations of the treatment condition. They are included in the analysis to account for heterogeneity in how the treatment is implemented.
 
-\paragraph{Semantic Preservation}
+\paragraph{Semantics Preservation}
 All transformations are required to preserve the functional behavior of the method. We define this using input--output equivalence.
 
 Let $m$ and $m'$ be two versions of a method with the same signature. We say that $m'$ is \emph{semantics-preserving} with respect to $m$ if:
