@@ -117,3 +117,9 @@ tags:
 
 clean:
 	latexmk -C "${NAME}.tex"
+
+ds-submission.pdf:
+	latexmk -pdf ds-submission.tex
+
+view-ds: ds-submission.pdf
+	open $<
