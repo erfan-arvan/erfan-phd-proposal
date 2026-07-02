@@ -124,7 +124,7 @@ Evaluating Proxy Reliability}
 %% -----------------------------------------------------------------------
 
 We addressed the first obstacle---the lack of validated human-study
-proxies---in prior work~\cite{arvan2026reliability}.
+proxies---in our recent work~\cite{arvan2026reliability}.
 Our goal was to compare the reliability of commonly used human-study proxies
 against a ground truth measure of comprehension difficulty.
 The major challenge was that no such ground truth existed: there was no
@@ -150,8 +150,7 @@ ratings).
 Correlating each proxy against the expert-consensus ranking via Kendall's
 $\tau$ revealed a clear hierarchy:
 \begin{itemize}
-  \item \textbf{Most reliable:} time-based input--output proxies
-        
+  \item \textbf{Most reliable:} time-based input--output proxies:\\
         (\emph{time\_output}, $\tau = 0.86$; \emph{time\_correct\_output},
         $\tau = 0.79$; \emph{time\_function}, $\tau = 0.71$).
   \item \textbf{Moderately reliable:} subjective difficulty ratings and
@@ -170,13 +169,12 @@ approximation of comprehension difficulty.
 Second, they call into question prior work that relied on syntax-based
 proxies, whose negative correlation with expert judgments suggests they
 measure a fundamentally different construct than comprehension difficulty.
-This work is available as a preprint~\cite{arvan2026reliability}.
 
 %% -----------------------------------------------------------------------
 \section{Phase 2 (Proposed): Verifiability as an Automatic Proxy}
 %% -----------------------------------------------------------------------
 
-With a validated human-study baseline in hand, We can now rigorously test
+With a validated human-study baseline in hand, we can now rigorously test
 candidate automatic proxies.
 The first candidate we investigate is code \emph{verifiability}: the ease
 with which static verification tools can analyze code.
@@ -192,7 +190,7 @@ false positive warnings produced by static analysis tools and comprehension meas
 However, because it aggregated heterogeneous prior studies, it cannot isolate
 verifiability as the cause: the snippets differ in source, structure, size,
 and---as Phase~1 shows---proxy quality.
-My proposed study addresses all of these limitations.
+Our proposed study addresses all of these limitations.
 
 \paragraph{Treatment.}
 Verifiability is operationalized as a binary condition relative to a fixed
