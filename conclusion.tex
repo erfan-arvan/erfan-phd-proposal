@@ -1,9 +1,6 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-\todo{Recap the contributions of the paper.  (In fact, it is good to think of
-  this as a ``contributions'' section even if it's titled ``conclusion''.)
-  This section can do so in more depth or with more reference to techniques
-  and insights than the abstract and introduction were able to do, since
-  readers of those sections wouldn't have read the whole paper yet.
-  In other cases, this section is brief.}
+This proposal advances the scientific foundations for measuring and improving code comprehensibility. Our completed work establishes a practical conceptualization of comprehensibility grounded in expert consensus, constructed via the Delphi protocol, and evaluates 14 commonly used proxies against this ground truth. The results reveal a clear hierarchy: time-based proxies for input-output reasoning tasks align most closely with expert judgments, while syntax-based proxies are not only weak but in some cases negatively correlated with comprehensibility. These findings have immediate implications for how prior work should be interpreted and how future studies should be designed.
+Building on this foundation, the proposed next study investigates whether code verifiability, operationalized through false positive warnings produced by the Checker Framework, can serve as a reliable automatic proxy for comprehensibility. By manipulating verifiability through semantics-preserving transformations in a controlled experiment, we aim to establish whether the relationship observed in prior meta-analytic work holds under rigorous causal conditions. A confirmed relationship would reduce reliance on costly human studies and enable scalable tooling for comprehensibility-driven code improvement.
+Beyond this study, the proposed research agenda addresses several open questions: evaluating LLM agents as substitutes for human participants, reassessing prior literature through the lens of validated proxies, studying the impact of accidental complexity, and developing practical refactoring tools. Together, these contributions work toward a principled, empirically grounded methodology for measuring and improving code comprehensibility at scale.

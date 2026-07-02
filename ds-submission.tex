@@ -1,0 +1,273 @@
+%% SPLASH/ISSTA 2026 Doctoral Symposium Submission
+%% ACM SIGPLAN acmart style, double-column, max 3 pages incl. references
+
+\documentclass[sigplan,10pt,anonymous=false]{acmart}
+\settopmatter{printfolios=false,printccs=false,printacmref=false}
+
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\usepackage{xspace}
+\usepackage{enumitem}
+\setlist{noitemsep, topsep=3pt}
+
+\begin{document}
+
+\title{Toward Reliable Automatic Proxies for Code Comprehensibility}
+
+\author{Erfan Arvan}
+\affiliation{%
+  \institution{New Jersey Institute of Technology}
+  \city{Newark}
+  \state{NJ}
+  \country{USA}
+}
+\email{ea442@njit.edu}
+
+\begin{abstract}
+Improving code comprehensibility requires measuring it reliably, yet no
+reliable automatic proxy for comprehensibility exists.
+Developing one requires a validated human-study baseline to test against.
+However, the human-study proxies used in the literature (e.g., Likert-scale
+ratings or response time on output-prediction tasks) have not been
+systematically validated either, and the construct itself lacks a standard
+definition.
+We address this foundational gap first: we introduce a conceptualization of
+comprehensibility based on expert agreement, construct a ground truth via the
+Delphi protocol, and evaluate commonly used human-study proxies against it.
+We find that proxies based on input--output reasoning and response time are
+particularly reliable, while syntax-based proxies are especially unreliable.
+With this validated foundation, we propose a controlled human study to test
+whether code verifiability---the ease with which static verification tools
+can analyze code---can serve as a reliable automatic proxy for comprehensibility.
+If verifiability alone explains comprehension difficulty well, it can be used
+as a standalone automatic proxy; if it only partially explains it, it becomes
+one signal among several in a combined automatic proxy.
+Beyond this study, the research agenda includes reassessing prior work in
+light of proxy reliability, evaluating LLM-based agents as substitutes for
+human participants, and developing tools that leverage reliable automatic
+proxies to improve code comprehensibility.
+\end{abstract}
+
+\maketitle
+
+%% -----------------------------------------------------------------------
+\section{Motivation}
+%% -----------------------------------------------------------------------
+
+Code comprehensibility is a fundamental property of software: most
+maintenance, debugging, refactoring, and code review tasks depend on a
+developer's ability to build an accurate mental model of the code they are
+working with.
+Developers spend between 58\% and 70\% of their time on this
+activity~\cite{percent1,scalabrino2017automatically}, and code that is
+difficult to understand slows development, increases the risk of introducing
+bugs, and makes collaboration harder.
+Improving code comprehensibility is therefore a high-impact goal---but
+improving it requires measuring it reliably.
+
+Most existing studies measure comprehensibility through controlled human
+studies, which require careful design, participant recruitment, and often
+months of preparation.
+This makes it infeasible to rely on human studies whenever we need a
+comprehensibility estimate---for instance, to compare two implementations,
+to guide automated refactoring, or to evaluate LLM-generated code for
+human understandability.
+What we need instead is a reliable \emph{automatic} proxy for code
+comprehensibility: a program analysis or metric that estimates comprehension
+difficulty directly from the code, without requiring human participants.
+Prior proposals---cyclomatic complexity~\cite{curtis2006measuring}, Halstead measures~\cite{chidamber1994metrics}, lines of
+code~\cite{nunez2017source}---turn out to correlate weakly, if at all, with developer comprehension
+behavior~\cite{feigenspan2011exploring,peitek2021program,scalabrino2019automatically}.
+No reliable automatic proxy for code comprehensibility currently exists.
+
+These prior proposals are surface-level and syntax-based: they capture
+structural properties of code without reasoning about its meaning or behavior.
+A natural next step is to ask whether semantic information can do better.
+One promising direction is code \emph{verifiability}.
+The hypothesis is that code that is easier for verification tools to analyze
+is also easier for humans to understand.
+Prior work~\cite{FeldmanKC2023} investigated this hypothesis in a
+meta-analysis, operationalizing verifiability as the number of false positive
+warnings produced by static analysis tools, and found associations between
+verifiability and comprehension measures across a collection of prior studies.
+However, because their analysis aggregated heterogeneous prior studies with
+different code sources, structures, and participant populations, they could
+not control for confounders or establish a causal relationship.
+We want to re-evaluate this relationship in a controlled setting where
+verifiability is the only factor that varies between code snippets.
+
+To do this rigorously, we need a reliable human-study baseline to test
+verifiability against: we need to know which code is actually harder to
+understand from a human study.
+This is where we encountered a first obstacle.
+The human-study proxies used in the literature---observable tasks assigned
+to participants (e.g., predicting program output) paired with measurements
+of their performance (e.g., response time or correctness)---have themselves
+never been systematically validated.
+Moreover, the field lacks a widely accepted definition of comprehensibility,
+so researchers often define it in terms of whatever proxy they happen to
+use~\cite{Wyrich:ACS23}.
+Without knowing which human-study proxies are reliable, we cannot use them
+confidently to evaluate a candidate automatic proxy.
+
+We therefore addressed this obstacle first.
+We introduce a principled conceptualization of comprehensibility, construct
+an expert-consensus ground truth, and evaluate the reliability of commonly
+used human-study proxies against it.
+With that validated foundation in hand, we then proceed to test verifiability
+as a candidate automatic proxy in a controlled human study.
+
+%% -----------------------------------------------------------------------
+\section{Phase 1 (Completed): Reconceptualizing Comprehensibility and\\
+Evaluating Proxy Reliability}
+%% -----------------------------------------------------------------------
+
+We addressed the first obstacle---the lack of validated human-study
+proxies---in prior work~\cite{arvan2026reliability}.
+Our goal was to compare the reliability of commonly used human-study proxies
+against a ground truth measure of comprehension difficulty.
+The major challenge was that no such ground truth existed: there was no
+independent, principled measure of which code is actually harder to understand
+that we could use to evaluate the proxies against.
+
+To construct one, we conceptualized code comprehensibility as expert agreement
+on relative comprehension difficulty.
+Using the Delphi protocol~\cite{delphi,delphiOriginal,randManual}---a
+structured method for eliciting and refining expert judgment under
+uncertainty, successfully applied in medicine~\cite{m1,m2,m3,m4},
+geopolitical forecasting~\cite{g1,g2}, and other domains~\cite{e1,o1}---a
+panel of five senior professional software engineers iteratively ranked eight
+real-world Java methods by comprehension difficulty and resolved disagreements
+through anonymized written feedback over three rounds.
+
+We then conducted a controlled study in which 44 undergraduate CS students
+completed tasks corresponding to 14 comprehension proxies from the literature
+on the same eight methods, covering four task types (program function,
+input--output reasoning, syntax identification, and subjective rating) and
+three measure types (response time, answer correctness, and Likert-scale
+ratings).
+Correlating each proxy against the expert-consensus ranking via Kendall's
+$\tau$ revealed a clear hierarchy:
+\begin{itemize}
+  \item \textbf{Most reliable:} time-based input--output proxies
+        
+        (\emph{time\_output}, $\tau = 0.86$; \emph{time\_correct\_output},
+        $\tau = 0.79$; \emph{time\_function}, $\tau = 0.71$).
+  \item \textbf{Moderately reliable:} subjective difficulty ratings and
+        general reading time ($\tau \in [0.50, 0.64]$).
+  \item \textbf{Unreliable:} all syntax-based proxies
+        (\emph{acc\_syntaxBL}, $\tau = -0.37$;
+        \emph{time\_syntaxBL}, $\tau = -0.21$), showing near-zero or
+        negative correlations regardless of whether time or correctness
+        is used as the measure.
+\end{itemize}
+
+These results have two consequences.
+First, they provide a validated set of proxies for future human studies:
+researchers can now confidently use input--output response time as a reliable
+approximation of comprehension difficulty.
+Second, they call into question prior work that relied on syntax-based
+proxies, whose negative correlation with expert judgments suggests they
+measure a fundamentally different construct than comprehension difficulty.
+This work is available as a preprint~\cite{arvan2026reliability}.
+
+%% -----------------------------------------------------------------------
+\section{Phase 2 (Proposed): Verifiability as an Automatic Proxy}
+%% -----------------------------------------------------------------------
+
+With a validated human-study baseline in hand, We can now rigorously test
+candidate automatic proxies.
+The first candidate we investigate is code \emph{verifiability}: the ease
+with which static verification tools can analyze code.
+This is motivated by a widely held assumption in the verification
+community---captured explicitly in the Checker Framework
+manual~\cite{checkerframework-manual}, which advises developers to ``rewrite
+your code to be simpler for the checker to analyze; this is likely to make
+it easier for people to understand, too''---that more verifiable code is also
+more comprehensible.
+
+A prior meta-analysis~\cite{FeldmanKC2023} found associations between
+false positive warnings produced by static analysis tools and comprehension measures.
+However, because it aggregated heterogeneous prior studies, it cannot isolate
+verifiability as the cause: the snippets differ in source, structure, size,
+and---as Phase~1 shows---proxy quality.
+My proposed study addresses all of these limitations.
+
+\paragraph{Treatment.}
+Verifiability is operationalized as a binary condition relative to a fixed
+set of Checker Framework checkers~\cite{PapiACPE2008}.
+\emph{High-verifiability} code produces no false positive warnings;
+\emph{low-verifiability} code is a semantically equivalent version of the
+same method that produces one or more false positives under the same
+checkers.
+Paired variants are constructed via semantics-preserving transformations
+(defined as input--output equivalence) in two phases: first by eliminating
+false positives from warning-producing methods, then by injecting false
+positives into warning-free methods.
+Transformations span a range of code-length changes to avoid collinearity
+between verifiability condition and code length.
+
+\paragraph{Outcome and design.}
+The primary outcome is response time on input--output tasks---the most
+reliable proxy identified in Phase~1.
+The experiment uses a mixed design: within-subjects over snippets and
+between-subjects over verifiability condition, so no participant sees both
+versions of the same method.
+Latin square counterbalancing ensures balanced exposure to both conditions
+across participants.
+The analysis uses linear mixed-effects models with a fixed effect for
+verifiability condition, random intercepts for participants and snippets,
+and covariates for snippet order, code length, and transformation type.
+
+\paragraph{Interpretation.}
+If verifiability alone explains comprehension difficulty well, it can be used
+as a standalone automatic proxy.
+If it only partially explains comprehension difficulty, it becomes one signal
+among several in a combined automatic proxy.
+A null result is equally meaningful: it would provide controlled evidence
+that the associations in prior work~\cite{FeldmanKC2023} were driven by
+confounds rather than a genuine relationship.
+
+%% -----------------------------------------------------------------------
+\section{Evaluation and Future Directions}
+%% -----------------------------------------------------------------------
+
+\paragraph{Phase 2 evaluation.}
+The primary evaluation metric is the fixed effect of verifiability condition on
+response time on input--output tasks.
+The main threats to validity are:
+\textit{internal}---transformations may introduce residual structural
+differences beyond verifiability, mitigated by simple, manually validated
+transformations and structural covariates in the model;
+\textit{construct}---false positive warnings and response time are each
+one-dimensional operationalizations of broader constructs; and
+\textit{external}---results are scoped to Java, the Checker Framework, and
+undergraduate participants, and generalization to other languages, tools,
+and professional developers is future work.
+All data and analysis scripts will be made publicly available.
+
+\paragraph{Broader agenda.}
+Beyond Phase~2, the research agenda includes:
+(1)~evaluating whether LLM-based agents can reliably substitute for human
+participants in comprehension studies, enabling further scaling of proxy
+validation;
+(2)~systematically reassessing prior comprehensibility studies through the
+lens of validated proxies, identifying which findings remain robust and which
+relied on unreliable measurements;
+(3)~investigating how different forms of accidental
+complexity~\cite{brooks1987no} affect comprehension time, using input--output
+response time as the validated outcome; and
+(4)~developing tools that identify hard-to-understand code and suggest
+semantics-preserving refactorings, contingent on establishing a reliable
+automatic proxy.
+
+Together, this work aims to establish a principled and empirically grounded
+foundation for measuring and improving code comprehensibility.
+
+%% -----------------------------------------------------------------------
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{local,delphi,plume-bib/ernst,plume-bib/crossrefs}
+
+\end{document}
